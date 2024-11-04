@@ -6,6 +6,7 @@ const sequelize = require("./database/db");
 const UserToken = require("./models/userTokens");
 const User = require("./models/users");
 const session = require("express-session");
+const multer  = require('multer');
 
 dotenv.config();
 
@@ -15,6 +16,17 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    return cb(null, './uploads')
+  },
+  filename: function (req, file, cb) {
+    return cb(null, `${Date.now()}-${file.originalname}`)
+  }
+})
+
+const upload = multer({ storage: storage })
 
 app.use(
   session({
@@ -34,6 +46,13 @@ mountRoutes(app);
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.post("/uploadFile", upload.single("image"), (req, res) => {
+  // console.log(req.body);
+  console.log(req.file);
+
+  return res.status(200).send({message: "Your file is uploaded."})
+})
 
 // UserToken.sync({force: true})
 
