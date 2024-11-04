@@ -107,7 +107,6 @@ async function restricToLoggedinUserOnly(req, res, next) {
   }
 }
 
-
 module.exports = {
-  restricToLoggedinUserOnly
+  restricToLoggedinUserOnly,
 }
